@@ -1,33 +1,32 @@
 use chrono::prelude::*;
 
-trait OSScrapper {
-    fn new(latest_os_version_known: OSRelease) -> Self;
-
+pub trait OSScrapper {
     fn get_os_new_release(&mut self) -> Option<OSRelease>;
-
-    fn scrap(&mut self) -> ();
+    fn scrap(&mut self) -> Vec<OSRelease>;
 }
 
-enum Familly {
+#[derive(Debug, Clone)]
+pub enum OSFamily {
     Ubuntu,
     Debian,
 }
 
-struct OSRelease {
+#[derive(Debug, Clone)]
+pub struct OSRelease {
     version: String,
     name: String,
-    family: Familly,
+    family: OSFamily,
     arch: String,
-    release_date: Utc,
+    release_date: DateTime<Utc>,
 }
 
 impl OSRelease {
-    fn new(
+    pub fn new(
         version: String,
         name: String,
-        family: Familly,
+        family: OSFamily,
         arch: String,
-        release_date: Utc,
+        release_date: DateTime<Utc>,
     ) -> OSRelease {
         OSRelease {
             version,
@@ -37,8 +36,12 @@ impl OSRelease {
             release_date,
         }
     }
-
+    #[allow(dead_code)]
     fn older(newer_os_release: OSRelease) -> bool {
         unimplemented!("Should return true if os_release in arg is newer than self")
+    }
+
+    pub fn to_string(&self) -> String {
+        format!("{} {} {} {} {}", &self.version, &self.name, &self.family, &self.arch, &self.release_date)
     }
 }
